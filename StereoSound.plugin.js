@@ -1,6 +1,6 @@
 /**
  * @name StereoSound
- * @version 0.0.7
+ * @version 0.1.0
  * @authorLink https://github.com/riolubruh
  * @source https://raw.githubusercontent.com/riolubruh/StereoSoundFixed/main/StereoSound.plugin.js
  */
@@ -29,7 +29,7 @@
 @else@*/
 
 module.exports = (() => {
-    const config = {"main":"index.js","info":{"name":"StereoSound","authors":[{"name":"Riolubruh","discord_id":"359063827091816448","github_username":"Riolubruh"}],"authorLink":"https://github.com/riolubruh","version":"0.0.7","description":"Adds stereo sound to your own microphone's output. Requires a capable stereo microphone.","github":"https://github.com/riolubruh","github_raw":"https://raw.githubusercontent.com/riolubruh/StereoSoundFixed/main/StereoSound.plugin.js"},"changelog":[{"title":"Changes","items":["Fixed after SWC update"]}],"defaultConfig":[{"type":"switch","id":"enableToasts","name":"Enable Toasts","note":"Allows the plugin to let you know it is working, and also warn you about voice settings","value":true}]};
+    const config = {"main":"index.js","info":{"name":"StereoSound","authors":[{"name":"Riolubruh","discord_id":"359063827091816448","github_username":"Riolubruh"}],"authorLink":"https://github.com/riolubruh","version":"0.1.0","description":"Adds stereo sound to your own microphone's output. Requires a capable stereo microphone.","github":"https://github.com/riolubruh","github_raw":"https://raw.githubusercontent.com/riolubruh/StereoSoundFixed/main/StereoSound.plugin.js"},"changelog":[{"title":"Changes","items":["Fixed after SWC update"]}],"defaultConfig":[{"type":"switch","id":"enableToasts","name":"Enable Toasts","note":"Allows the plugin to let you know it is working, and also warn you about voice settings","value":true}]};
 
     return !global.ZeresPluginLibrary ? class {
         constructor() {this._config = config;}
@@ -58,8 +58,34 @@ module.exports = (() => {
   return class StereoSound extends Plugin {
     onStart() {
       this.settingsWarning();
-      const voiceModule = BdApi.Webpack.getModule(BdApi.Webpack.Filters.byPrototypeFields("setSoundshareSource"));
-      Patcher.after(voiceModule.prototype, "initialize", this.replacement.bind(this));
+      const voiceModule = WebpackModules.getModule(BdApi.Webpack.Filters.byPrototypeFields("updateVideoQuality"));
+	  console.log(voiceModule.prototype);
+      BdApi.Patcher.after("StereoSound", voiceModule.prototype, "updateVideoQuality", (thisObj, _args, ret) => {
+		  
+		console.log("asdfg");
+		//console.log(thisObj);
+		//console.log(_args);
+		//console.log(ret);
+		console.log(thisObj)
+      const setTransportOptions = thisObj.conn.setTransportOptions;
+      thisObj.conn.setTransportOptions = function (obj) {
+        if (obj.audioEncoder) {
+          obj.audioEncoder.params = {
+            stereo: "2",
+          };
+          obj.audioEncoder.channels = 2;
+        }
+        if (obj.fec) {
+          obj.fec = false;
+        }
+        if (obj.encodingVoiceBitRate < 512000 ) { //128
+                obj.encodingVoiceBitRate = 512000
+        }
+        
+        setTransportOptions.call(thisObj, obj);
+      };
+      return ret;
+	  });
     }
     settingsWarning() {
       const voiceSettingsStore = WebpackModules.getByProps("getEchoCancellation");
@@ -83,31 +109,7 @@ module.exports = (() => {
         return true;
       } else return false;
     }
-    replacement(thisObj, _args, ret) {
-      const setTransportOptions = thisObj.conn.setTransportOptions;
-      thisObj.conn.setTransportOptions = function (obj) {
-        if (obj.audioEncoder) {
-          obj.audioEncoder.params = {
-            stereo: "2",
-          };
-          obj.audioEncoder.channels = 2;
-        }
-        if (obj.fec) {
-          obj.fec = false;
-        }
-        if (obj.encodingVoiceBitRate < 512000 ) { //128
-                obj.encodingVoiceBitRate = 512000
-        }
-        
-        setTransportOptions.call(thisObj, obj);
-      };
-      if (!this.settingsWarning()) {
-        if (this.settings.enableToasts) {
-          Toasts.info("Mic Enhancer Active");
-        }
-      }
-      return ret;
-    }
+	
     onStop() {
       Patcher.unpatchAll();
     }
