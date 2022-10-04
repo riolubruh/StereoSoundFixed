@@ -2,7 +2,7 @@
  * @name StereoSound
  * @version 0.0.7
  * @authorLink https://github.com/riolubruh
- * @source https://raw.githubusercontent.com/riolubruh/SoundShareFixed/main/StereoSound.plugin.js
+ * @source https://raw.githubusercontent.com/riolubruh/StereoSoundFixed/main/StereoSound.plugin.js
  */
 /*@cc_on
 @if (@_jscript)
@@ -29,7 +29,7 @@
 @else@*/
 
 module.exports = (() => {
-    const config = {"main":"index.js","info":{"name":"StereoSound","authors":[{"name":"Riolubruh","discord_id":"359063827091816448","github_username":"Riolubruh"}],"authorLink":"https://github.com/riolubruh","version":"0.0.7","description":"Adds stereo sound to your own microphone's output. Requires a capable stereo microphone.","github":"https://github.com/riolubruh","github_raw":"https://raw.githubusercontent.com/riolubruh/SoundShareFixed/main/StereoSound.plugin.js"},"changelog":[{"title":"Changes","items":["Fixed after SWC update"]}],"defaultConfig":[{"type":"switch","id":"enableToasts","name":"Enable Toasts","note":"Allows the plugin to let you know it is working, and also warn you about voice settings","value":true}]};
+    const config = {"main":"index.js","info":{"name":"StereoSound","authors":[{"name":"Riolubruh","discord_id":"359063827091816448","github_username":"Riolubruh"}],"authorLink":"https://github.com/riolubruh","version":"0.0.7","description":"Adds stereo sound to your own microphone's output. Requires a capable stereo microphone.","github":"https://github.com/riolubruh","github_raw":"https://raw.githubusercontent.com/riolubruh/StereoSoundFixed/main/StereoSound.plugin.js"},"changelog":[{"title":"Changes","items":["Fixed after SWC update"]}],"defaultConfig":[{"type":"switch","id":"enableToasts","name":"Enable Toasts","note":"Allows the plugin to let you know it is working, and also warn you about voice settings","value":true}]};
 
     return !global.ZeresPluginLibrary ? class {
         constructor() {this._config = config;}
