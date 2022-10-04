@@ -1,8 +1,8 @@
 /**
  * @name StereoSound
- * @version 0.0.6
- * @authorLink https://github.com/bepvte
- * @source https://raw.githubusercontent.com/bepvte/bd-addons/main/plugins/StereoSound.plugin.js
+ * @version 0.0.7
+ * @authorLink https://github.com/riolubruh
+ * @source https://raw.githubusercontent.com/riolubruh/SoundShareFixed/main/StereoSound.plugin.js
  */
 /*@cc_on
 @if (@_jscript)
@@ -29,7 +29,7 @@
 @else@*/
 
 module.exports = (() => {
-    const config = {"main":"index.js","info":{"name":"StereoSound","authors":[{"name":"bep","discord_id":"147077474222604288","github_username":"bepvte"}],"authorLink":"https://github.com/bepvte","version":"0.0.6","description":"Adds stereo sound to your own microphone's output. Requires a capable stereo microphone.","github":"https://github.com/bepvte/bd-addons","github_raw":"https://raw.githubusercontent.com/bepvte/bd-addons/main/plugins/StereoSound.plugin.js"},"changelog":[{"title":"Changes","items":["Adjusted warning toast behavior"]}],"defaultConfig":[{"type":"switch","id":"enableToasts","name":"Enable Toasts","note":"Allows the plugin to let you know it is working, and also warn you about voice settings","value":true}]};
+    const config = {"main":"index.js","info":{"name":"StereoSound","authors":[{"name":"Riolubruh","discord_id":"359063827091816448","github_username":"Riolubruh"}],"authorLink":"https://github.com/riolubruh","version":"0.0.7","description":"Adds stereo sound to your own microphone's output. Requires a capable stereo microphone.","github":"https://github.com/riolubruh","github_raw":"https://raw.githubusercontent.com/riolubruh/SoundShareFixed/main/StereoSound.plugin.js"},"changelog":[{"title":"Changes","items":["Fixed after SWC update"]}],"defaultConfig":[{"type":"switch","id":"enableToasts","name":"Enable Toasts","note":"Allows the plugin to let you know it is working, and also warn you about voice settings","value":true}]};
 
     return !global.ZeresPluginLibrary ? class {
         constructor() {this._config = config;}
@@ -59,7 +59,6 @@ module.exports = (() => {
     onStart() {
       this.settingsWarning();
       const voiceModule = BdApi.Webpack.getModule(BdApi.Webpack.Filters.byPrototypeFields("setSoundshareSource"));
-	  console.log(voiceModule.prototype);
       Patcher.after(voiceModule.prototype, "initialize", this.replacement.bind(this));
     }
     settingsWarning() {
